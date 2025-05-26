@@ -1,0 +1,15 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=StockNewsletterDb;Trusted_Connection=true;MultipleActiveResultSets=true"
+  },
+  "AlphaVantage": {
+    "ApiKey": "YOUR_ALPHAVANTAGE_API_KEY_HERE"
+  }
+} 

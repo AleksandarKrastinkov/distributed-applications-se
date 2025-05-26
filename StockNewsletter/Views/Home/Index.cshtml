@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (TempData["SearchError"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Search Error:</strong> @TempData["SearchError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="hero bg-primary text-white text-center py-5 mb-4" style="border-radius: 1rem;">
+    <h1 class="display-3 fw-bold mb-3">Stock Newsletter</h1>
+    <p class="lead mb-4">Your one-stop app for stock earnings, news, and market movers. Stay ahead with real-time data and insights!</p>
+    <div class="d-flex justify-content-center gap-3">
+        <a class="btn btn-light btn-lg px-4" asp-controller="Earnings" asp-action="EarningsCalendar">Earnings Calendar</a>
+        <a class="btn btn-outline-light btn-lg px-4" asp-controller="Earnings" asp-action="EarningsCalendar" fragment="stock-search-bar">Stock Search</a>
+        <a class="btn btn-success btn-lg px-4" asp-controller="Watchlist" asp-action="Index">My Watchlist</a>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Market Movers</h4>
+                    <p class="text-muted">See the top gainers, losers, and most active stocks today.</p>
+                    <!-- TODO: Add dynamic market movers here -->
+                    <div class="alert alert-info">Market movers data coming soon!</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <i class="fas fa-search text-primary"></i> Quick Stock Search
+                    </h4>
+                    <form method="get" asp-controller="Home" asp-action="StockSearch" id="stockSearchForm">
+                        <div class="input-group">
+                            <input type="text" name="symbol" id="symbolInput" class="form-control" 
+                                   placeholder="Enter symbol or company name (e.g. AAPL, NVIDIA)" 
+                                   required minlength="1" maxlength="10" />
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </form>
+                    <small class="text-muted mt-2 d-block">
+                        <i class="fas fa-info-circle"></i> Search for any stock symbol or company name to view detailed earnings information.
+                    </small>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <strong>Popular stocks:</strong> 
+                            <a href="#" class="text-decoration-none" onclick="searchStock('AAPL')">AAPL</a>, 
+                            <a href="#" class="text-decoration-none" onclick="searchStock('MSFT')">MSFT</a>, 
+                            <a href="#" class="text-decoration-none" onclick="searchStock('GOOGL')">GOOGL</a>, 
+                            <a href="#" class="text-decoration-none" onclick="searchStock('TSLA')">TSLA</a>, 
+                            <a href="#" class="text-decoration-none" onclick="searchStock('NVDA')">NVDA</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function searchStock(symbol) {
+            document.getElementById('symbolInput').value = symbol;
+            document.getElementById('stockSearchForm').submit();
+        }
+
+        // Add some client-side validation and enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('stockSearchForm');
+            const input = document.getElementById('symbolInput');
+
+            // Convert input to uppercase as user types
+            input.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+
+            // Enhanced form validation
+            form.addEventListener('submit', function(e) {
+                const symbol = input.value.trim();
+                if (!symbol) {
+                    e.preventDefault();
+                    alert('Please enter a stock symbol or company name.');
+                    input.focus();
+                    return false;
+                }
+                
+                // Show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+                submitBtn.disabled = true;
+            });
+
+            // Focus on input when page loads
+            input.focus();
+        });
+    </script>
+}

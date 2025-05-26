@@ -1,0 +1,56 @@
+@model IEnumerable<StockNewsletter.Models.EarningsDaily>
+
+@{
+    ViewData["Title"] = "Earnings Calendar";
+}
+
+<h1>Earnings Calendar</h1>
+
+@if (Model != null && Model.Any())
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-info-circle"></i> 
+        <strong>Data Notice:</strong> Earnings data is cached for 7 days to optimize performance and stay within free API limits. 
+        Data refreshes weekly to provide you with updated earnings information.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form id="stock-search-bar" method="get" asp-action="EarningsCalendar">
+    <div class="input-group mb-3">
+        <input type="text" name="symbol" class="form-control" placeholder="Enter company symbol or name (e.g. NVIDIA or Apple)" />
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Company Name</th>
+                <th>Report Date</th>
+                <th>Fiscal Date Ending</th>
+                <th>Estimate</th>
+                <th>Currency</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Symbol</td>
+                    <td>@item.Name</td>
+                    <td>@(item.ReportDate.HasValue ? item.ReportDate.Value.ToShortDateString() : "N/A")</td>
+                    <td>@item.FiscalDateEnding</td>
+                    <td>@(string.IsNullOrEmpty(item.Estimate) ? "N/A" : item.Estimate)</td>
+                    <td>@(string.IsNullOrEmpty(item.Currency) ? "N/A" : item.Currency)</td>
+                    <td>
+                        <a asp-action="HistoricalEarnings" asp-route-symbol="@item.Symbol" class="btn btn-info btn-sm">View History</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div> 
